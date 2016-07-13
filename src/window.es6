@@ -49,7 +49,7 @@ export class Window {
     }
 
     this.resizeRenderer(newWidth, newHeight)
-    this.resizeScene(newWidth, newHeight)
+    this.resizeRenderTarget(newWidth, newHeight)
   }
 
   resizeRenderer(w, h) {
@@ -62,7 +62,7 @@ export class Window {
     this.renderer.resize(w, h)
   }
 
-  resizeScene(w, h) {
+  resizeRenderTarget(w, h) {
     if (this.renderTarget !== null) {
       this.renderTarget.scale.x = w / this.resolutionWidth
       this.renderTarget.scale.y = h / this.resolutionHeight
