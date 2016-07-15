@@ -60,3 +60,7 @@ export class Scene extends PIXI.Container {
     this.paused = false
   }
 }
+
+Scene.sharedAssets = ['resources/assets/fonts/classified.fnt',
+                      'resources/assets/fonts/curse.fnt',
+                      'resources/assets/fonts/little_league.fnt']

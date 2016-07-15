@@ -52515,7 +52515,7 @@ var Game = exports.Game = function () {
   return Game;
 }();
 
-},{"./scene_manager":439,"./window":442,"pixi.js":399}],436:[function(require,module,exports){
+},{"./scene_manager":439,"./window":444,"pixi.js":399}],436:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -52740,6 +52740,8 @@ var Scene = exports.Scene = function (_PIXI$Container) {
   return Scene;
 }(_pixi2.default.Container);
 
+Scene.sharedAssets = ['resources/assets/fonts/classified.fnt', 'resources/assets/fonts/curse.fnt', 'resources/assets/fonts/little_league.fnt'];
+
 },{"./asset_loader":434,"pixi.js":399}],439:[function(require,module,exports){
 'use strict';
 
@@ -52814,11 +52816,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _lodash = require('lodash');
+
 var _scene = require('../scene');
 
 var _player = require('../player');
 
-var _lodash = require('lodash');
+var _tile_map = require('../tile_map');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -52835,7 +52839,7 @@ var GameScene = exports.GameScene = function (_Scene) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GameScene).call(this, window));
 
     _this.player = new _player.Player();
-    _this.assets = (0, _lodash.flatten)([_this.player.assets, 'resources/assets/basement_objects.json', 'resources/assets/fonts/classified.fnt', 'resources/assets/fonts/curse.fnt', 'resources/assets/fonts/little_league.fnt']);
+    _this.assets = (0, _lodash.flatten)([_scene.Scene.sharedAssets, _this.player.assets, 'resources/maps/test_1.json', 'resources/assets/basement_objects.json']);
     _this.sprites = {};
     return _this;
   }
@@ -52851,25 +52855,28 @@ var GameScene = exports.GameScene = function (_Scene) {
     value: function loadingDone(loader, resources) {
       _get(Object.getPrototypeOf(GameScene.prototype), 'loadingDone', this).call(this, loader, resources);
 
-      this.wallTexture = PIXI.Texture.fromFrame('dark_wall.png');
-      this.wall = new PIXI.TilingSprite(this.wallTexture, 240, 80);
-      this.wall.position = { x: 0, y: -10 };
-      this.addChild(this.wall);
+      this.tileMap = new _tile_map.TileMap(resources, 'resources/maps/test_1.json');
+      console.log(this.tileMap);
 
-      this.shelves = new PIXI.Sprite.fromFrame('bloody_shelves.png');
-      this.shelves.anchor.set(0.5);
-      this.shelves.position = { x: 50, y: 54 };
-      this.addChild(this.shelves);
-
-      this.mirror = new PIXI.Sprite.fromFrame('broken_mirror.png');
-      this.mirror.anchor.set(0.5);
-      this.mirror.position = { x: 100, y: 50 };
-      this.addChild(this.mirror);
-
-      this.table = new PIXI.Sprite.fromFrame('pig_table.png');
-      this.table.anchor.set(0.5);
-      this.table.position = { x: 150, y: 54 };
-      this.addChild(this.table);
+      // this.wallTexture = PIXI.Texture.fromFrame('dark_wall.png')
+      // this.wall = new PIXI.TilingSprite(this.wallTexture, 240, 80)
+      // this.wall.position = { x: 0, y: -10 }
+      // this.addChild(this.wall)
+      //
+      // this.shelves = new PIXI.Sprite.fromFrame('bloody_shelves.png')
+      // this.shelves.anchor.set(0.5)
+      // this.shelves.position = { x: 50, y: 54 }
+      // this.addChild(this.shelves)
+      //
+      // this.mirror = new PIXI.Sprite.fromFrame('broken_mirror.png')
+      // this.mirror.anchor.set(0.5)
+      // this.mirror.position = { x: 100, y: 50 }
+      // this.addChild(this.mirror)
+      //
+      // this.table = new PIXI.Sprite.fromFrame('pig_table.png')
+      // this.table.anchor.set(0.5)
+      // this.table.position = { x: 150, y: 54 }
+      // this.addChild(this.table)
 
       this.player.loadingDone();
       this.addChild(this.player);
@@ -52879,7 +52886,7 @@ var GameScene = exports.GameScene = function (_Scene) {
   return GameScene;
 }(_scene.Scene);
 
-},{"../player":437,"../scene":438,"lodash":300}],441:[function(require,module,exports){
+},{"../player":437,"../scene":438,"../tile_map":443,"lodash":300}],441:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52908,6 +52915,64 @@ var MenuScene = exports.MenuScene = function (_Scene) {
 }(_scene.Scene);
 
 },{"../scene":438}],442:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TileLayer = undefined;
+
+var _pixi = require('pixi.js');
+
+var _pixi2 = _interopRequireDefault(_pixi);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TileLayer = exports.TileLayer = function TileLayer(container, palette, tiles) {
+  _classCallCheck(this, TileLayer);
+
+  this.palette = palette;
+  this.tiles = tiles;
+};
+
+},{"pixi.js":399}],443:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TileMap = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _tile_layer = require('./tile_layer');
+
+var _lodash = require('lodash');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TileMap = exports.TileMap = function () {
+  function TileMap(resources, file) {
+    _classCallCheck(this, TileMap);
+
+    var resource = resources[file].data;
+    this.palette = resource.palette;
+    this.layers = (0, _lodash.map)(resource.layers, this.createTileLayer);
+  }
+
+  _createClass(TileMap, [{
+    key: 'createTileLayer',
+    value: function createTileLayer(layer) {
+      return new _tile_layer.TileLayer(this.container, this.palette, layer.tiles);
+    }
+  }]);
+
+  return TileMap;
+}();
+
+},{"./tile_layer":442,"lodash":300}],444:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -52972,7 +53037,7 @@ var Window = exports.Window = function () {
       }
 
       this.resizeRenderer(newWidth, newHeight);
-      this.resizeScene(newWidth, newHeight);
+      this.resizeRenderTarget(newWidth, newHeight);
     }
   }, {
     key: 'resizeRenderer',
@@ -52986,8 +53051,8 @@ var Window = exports.Window = function () {
       this.renderer.resize(w, h);
     }
   }, {
-    key: 'resizeScene',
-    value: function resizeScene(w, h) {
+    key: 'resizeRenderTarget',
+    value: function resizeRenderTarget(w, h) {
       if (this.renderTarget !== null) {
         this.renderTarget.scale.x = w / this.resolutionWidth;
         this.renderTarget.scale.y = h / this.resolutionHeight;
